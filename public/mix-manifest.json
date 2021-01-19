@@ -1,5 +1,7 @@
 {
     "/js/app.js": "/js/app.js",
     "/css/app.css": "/css/app.css",
-    "/css/style.css": "/css/style.css"
+    "/css/style.css": "/css/style.css",
+    "/fonts/open-sans.css": "/fonts/open-sans.css",
+    "/fonts/font-awesome.css": "/fonts/font-awesome.css"
 }
