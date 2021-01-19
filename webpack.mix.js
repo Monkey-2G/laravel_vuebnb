@@ -12,6 +12,11 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js').vue()
+    .styles([
+        'node_modules/open-sans-all/css/open-sans.css',
+        'node_modules/font-awesome/css/font-awesome.css',
+        'resources/css/style.css',
+        ],'public/css/style.css')
     .postCss('resources/css/app.css', 'public/css', [
         //
     ]);
