@@ -20,3 +20,7 @@ Route::get('/', function () {
 });
 
 Route::get('listing/{listing}', [ListingController::class, 'get_listing_api']);
+
+Route::get('/app', function () {
+    return view('app');
+});
