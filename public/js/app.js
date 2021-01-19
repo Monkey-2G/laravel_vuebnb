@@ -1880,7 +1880,7 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_1__.default({
     headerImageStyle에서 배경 이미지를 url 경로에 있는 것으로 style을 지정했기 때문에, url 경로의 image가 나온다.
     */
     headerImageStyle: {
-      'background-image': 'url(sample/header.jpg)'
+      'background-image': 'url(images/header.jpg)'
     },
 
     /* 

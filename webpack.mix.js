@@ -19,6 +19,7 @@ mix.js('resources/js/app.js', 'public/js').vue()
         ],'public/css/style.css')
     .copy('node_modules/open-sans-all/css/open-sans.css', 'public/fonts')
     .copy('node_modules/font-awesome/css/font-awesome.css', 'public/fonts')
+    .copy('resources/images', 'public/images')
     .postCss('resources/css/app.css', 'public/css', [
         //
     ]);

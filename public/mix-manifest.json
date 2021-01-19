@@ -3,5 +3,7 @@
     "/css/app.css": "/css/app.css",
     "/css/style.css": "/css/style.css",
     "/fonts/open-sans.css": "/fonts/open-sans.css",
-    "/fonts/font-awesome.css": "/fonts/font-awesome.css"
+    "/fonts/font-awesome.css": "/fonts/font-awesome.css",
+    "/images/header.jpg": "/images/header.jpg",
+    "/images/logo.png": "/images/logo.png"
 }
