@@ -1,7 +1,11 @@
 require('./bootstrap');
 
 import Vue from 'vue';
-import sample from './sample';
+// import sample from './sample';
+import { populateAmenitiesAndPrices } from './helpers';
+
+let model = JSON.parse(window.vuebnb_listing_model);
+model = populateAmenitiesAndPrices(model);
 
 const app = new Vue({
     /*  
@@ -25,18 +29,18 @@ const app = new Vue({
    하지만 이렇게 여러 스크립트 파일로 분할된 전역변수를 사용하는 것은 효율적이지 못하다.
    */
 
-   data : {
-       title : sample.title,
-       address : sample.address,
-       about : sample.about,
-
+   data : Object.assign(model, {
        /*
+        title : sample.title,
+        address : sample.address,
+        about : sample.about,
+
         index.html page에서 v-bind:style="headerImageStyle" 로 지정했다.
        Vue로 연결된 style은 headerImageStyle에서 지정한다 라고 해석할 수 있다.
        headerImageStyle에서 배경 이미지를 url 경로에 있는 것으로 style을 지정했기 때문에, url 경로의 image가 나온다.
        */
        headerImageStyle : {
-           'background-image' : 'url(images/header.jpg)'
+           'background-image' : `url(${model.images[0]})`
        },
 
        /* 
@@ -48,9 +52,10 @@ const app = new Vue({
        amenities라는 실제 배열은 아래에 sample.amenities로 선언된 amenities가 존재한다.
        amenity는 key값의 이름을 지정해준 것이다. 그래서 해당 key값의 value를 사용하려고 {{ amenity.title }}과 amenity.icon을 사용한 것이다.
        title과 icon은 amenities 배열 안에 있는 key 값들이다.
-       */
        amenities : sample.amenities,
        prices : sample.prices,
+       */
+       
 
        /*
        index.html에서 v-bind:class="{contracted:contracted}"로 작성을 했다.
@@ -60,7 +65,7 @@ const app = new Vue({
 
        contracted : true,
        modalOpen : false
-   },
+   }),
 
    /*
    모달 창이 열려있고, ESC를 눌렀을 때, modalOpen을 false 값으로 바꿔서 모달창을 종료시킨다.

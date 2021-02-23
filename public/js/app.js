@@ -1843,11 +1843,14 @@ module.exports = {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
-/* harmony import */ var _sample__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./sample */ "./resources/js/sample.js");
+/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helpers */ "./resources/js/helpers.js");
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
+ // import sample from './sample';
 
 
+var model = JSON.parse(window.vuebnb_listing_model);
+model = (0,_helpers__WEBPACK_IMPORTED_MODULE_0__.populateAmenitiesAndPrices)(model);
 var app = new vue__WEBPACK_IMPORTED_MODULE_1__.default({
   /*  
   el : '#app' 을 설정했다는 것은, Vue 문법이 마운트 된 (허용하는) 범위를 이야기한다.
@@ -1869,18 +1872,17 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_1__.default({
   var sample에 선언된 데이터들을 가져온 것이다.
   하지만 이렇게 여러 스크립트 파일로 분할된 전역변수를 사용하는 것은 효율적이지 못하다.
   */
-  data: {
-    title: _sample__WEBPACK_IMPORTED_MODULE_0__.default.title,
-    address: _sample__WEBPACK_IMPORTED_MODULE_0__.default.address,
-    about: _sample__WEBPACK_IMPORTED_MODULE_0__.default.about,
-
+  data: Object.assign(model, {
     /*
-     index.html page에서 v-bind:style="headerImageStyle" 로 지정했다.
+     title : sample.title,
+     address : sample.address,
+     about : sample.about,
+       index.html page에서 v-bind:style="headerImageStyle" 로 지정했다.
     Vue로 연결된 style은 headerImageStyle에서 지정한다 라고 해석할 수 있다.
     headerImageStyle에서 배경 이미지를 url 경로에 있는 것으로 style을 지정했기 때문에, url 경로의 image가 나온다.
     */
     headerImageStyle: {
-      'background-image': 'url(images/header.jpg)'
+      'background-image': "url(".concat(model.images[0], ")")
     },
 
     /* 
@@ -1891,9 +1893,9 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_1__.default({
     amenities라는 실제 배열은 아래에 sample.amenities로 선언된 amenities가 존재한다.
     amenity는 key값의 이름을 지정해준 것이다. 그래서 해당 key값의 value를 사용하려고 {{ amenity.title }}과 amenity.icon을 사용한 것이다.
     title과 icon은 amenities 배열 안에 있는 key 값들이다.
+    amenities : sample.amenities,
+    prices : sample.prices,
     */
-    amenities: _sample__WEBPACK_IMPORTED_MODULE_0__.default.amenities,
-    prices: _sample__WEBPACK_IMPORTED_MODULE_0__.default.prices,
 
     /*
     index.html에서 v-bind:class="{contracted:contracted}"로 작성을 했다.
@@ -1902,7 +1904,7 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_1__.default({
     */
     contracted: true,
     modalOpen: false
-  },
+  }),
 
   /*
   모달 창이 열려있고, ESC를 눌렀을 때, modalOpen을 false 값으로 바꿔서 모달창을 종료시킨다.
@@ -1974,54 +1976,109 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 /***/ }),
 
-/***/ "./resources/js/sample.js":
-/*!********************************!*\
-  !*** ./resources/js/sample.js ***!
-  \********************************/
+/***/ "./resources/js/helpers.js":
+/*!*********************************!*\
+  !*** ./resources/js/helpers.js ***!
+  \*********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => __WEBPACK_DEFAULT_EXPORT__
+/* harmony export */   "populateAmenitiesAndPrices": () => /* binding */ populateAmenitiesAndPrices,
+/* harmony export */   "groupByCountry": () => /* binding */ groupByCountry
 /* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  title: 'Central Downtown Apartment with Amenities',
-  address: 'No. 11, Song-Sho Road, Taipei City, Taiwan 105',
-  about: 'Come and stay at this modern and comfortable apartment! My home is centrally located right in the middle' + ' of the downtown. Talk about convenience! Shops, stores, and other destination areas are nearby. \r\n\r\nFeel the ' + 'warmth of the sun as there is plenty of natural light showers. The living room features tv, sofa, table, radio, ' + 'and fan. There is free wi-fi with a fast internet speed. \r\n\r\nForgot shopping for breakfast staples? We provide ' + 'eggs, bread, cereals, coffee, milk, tea and cookies. Enjoy cooking as my kitchen boasts full size appliances. The ' + 'dining table is for four people. Need to wash your clothes? There is a washer and a dryer. We provide hampers, ' + 'detergents, and clothing conditioner. \r\n\r\nIf you need to hit the gym, there is located at the fourth floor of ' + 'the building. There is indoor spa and pool.',
-  amenities: [{
-    title: 'Wireless Internet',
-    icon: 'fa-wifi'
-  }, {
-    title: 'Pets Allowed',
-    icon: 'fa-paw'
-  }, {
-    title: 'TV',
-    icon: 'fa-television'
-  }, {
-    title: 'Kitchen',
-    icon: 'fa-cutlery'
-  }, {
-    title: 'Breakfast',
-    icon: 'fa-coffee'
-  }, {
-    title: 'Laptop friendly workspace',
-    icon: 'fa-laptop'
-  }],
-  prices: [{
-    title: 'Per night',
-    value: '$89'
-  }, {
-    title: 'Extra people',
-    value: 'No charge'
-  }, {
-    title: 'Weekly discount',
-    value: '18%'
-  }, {
-    title: 'Monthly discount',
-    value: '50%'
-  }]
+var amenities = new Map();
+amenities.set('amenity_wifi', {
+  title: 'Wireless Internet',
+  icon: 'fa-wifi'
 });
+amenities.set('amenity_pets_allowed', {
+  title: 'Pets Allowed',
+  icon: 'fa-paw'
+});
+amenities.set('amenity_tv', {
+  title: 'TV',
+  icon: 'fa-television'
+});
+amenities.set('amenity_kitchen', {
+  title: 'Kitchen',
+  icon: 'fa-cutlery'
+});
+amenities.set('amenity_breakfast', {
+  title: 'Breakfast',
+  icon: 'fa-coffee'
+});
+amenities.set('amenity_laptop', {
+  title: 'Laptop friendly workspace',
+  icon: 'fa-laptop'
+});
+var prices = new Map();
+prices.set('price_per_night', 'Per night');
+prices.set('price_extra_people', 'Extra people');
+prices.set('price_weekly_discount', 'Weekly discount');
+prices.set('price_monthly_discount', 'Monthly discount');
+
+var populateAmenitiesAndPrices = function populateAmenitiesAndPrices(state) {
+  if (!state) return {};
+  var obj = {
+    id: state.id,
+    title: state.title,
+    address: state.address,
+    about: state.about,
+    amenities: [],
+    prices: [],
+    images: []
+  };
+
+  for (var key in state) {
+    var arr = key.split("_");
+
+    if (arr[0] === 'amenity' && state[key]) {
+      obj.amenities.push(key);
+    }
+
+    if (arr[0] === 'price') {
+      obj.prices.push({
+        title: key,
+        value: state[key]
+      });
+    }
+
+    if (arr[0] === 'image') {
+      obj.images.push(state[key]);
+    }
+  }
+
+  obj.amenities = obj.amenities.map(function (item) {
+    return amenities.get(item);
+  });
+  obj.prices = obj.prices.map(function (item) {
+    item.title = prices.get(item.title);
+    return item;
+  });
+  return obj;
+};
+
+
+
+var groupByCountry = function groupByCountry(listings) {
+  if (!listings) return {};
+  return listings.reduce(function (rv, x) {
+    var key = ['Taiwan', 'Poland', 'Cuba'].find(function (country) {
+      return x.address.indexOf(country) > -1;
+    });
+
+    if (!rv[key]) {
+      rv[key] = [];
+    }
+
+    rv[key].push(x);
+    return rv;
+  }, {});
+};
+
+
 
 /***/ }),
 

@@ -19,8 +19,13 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('listing/{listing}', [ListingController::class, 'get_listing_api']);
+// Route::get('listing/{listing}', [ListingController::class, 'get_listing_api']);
 
-Route::get('/app', function () {
-    return view('app');
+/* 
+Route::get('/listing/{listing}', function (Listing $listing) {
+    $model = $listing->toArray();
+    return view('app', ['model'=>$model]);
 });
+*/
+
+Route::get('/listing/{listing}', [ListingController::class, 'get_listing_web']);
